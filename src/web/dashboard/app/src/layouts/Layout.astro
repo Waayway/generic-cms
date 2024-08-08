@@ -1,0 +1,22 @@
+---
+import "@/styles/globals.css";
+import Header from "@/components/Header.astro";
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<title>Generic CMS</title>
+	</head>
+	<body class="min-h-screen bg-background font-sams antialiased">
+		<Header />
+		<main class="container">
+			<slot />
+		</main>
+	</body>
+</html>

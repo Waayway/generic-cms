@@ -1,0 +1,49 @@
+[package]
+name = "generic-cms"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+# Web dependencies
+axum = "0.7.5"
+rust-embed = {version = "8.5.0", features = ["axum"]}
+tokio = {version = "1.39.2", features = ["full"]}
+tower = "0.4.13"
+tower-http = {version = "0.5.2", features=["fs", "trace", "normalize-path"]}
+
+#  -> Graphql
+juniper = "0.16.1"
+juniper_axum = "0.1.0"
+
+#  -> Other
+jsonwebtoken = "9.3.0"
+mime_guess = "2.0.5"
+
+# Serializatian
+serde = {version = "1.0.204", features =["derive"]}
+serde_json = "1.0.120"
+
+# Logging
+tracing = "0.1.40"
+tracing-subscriber = "0.3.18"
+
+# env config
+envy = "0.4.2"
+dotenv = "0.15.0"
+
+# Databas dependencies
+[dependencies.sea-orm]
+version = "1.0.0"
+features = [
+  "sqlx-postgres",
+  "runtime-tokio-rustls" ,
+  "macros" 
+] 
+
+[dependencies.sea-orm-migration]
+version = "1.0.0"
+features = [
+  "sqlx-postgres",
+  "runtime-tokio-rustls"
+]
