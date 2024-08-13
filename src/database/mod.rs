@@ -1,6 +1,7 @@
 use std::time::Duration;
 
 use sea_orm::{ConnectOptions, Database, DatabaseConnection};
+use sea_orm_migration::MigratorTrait;
 
 use crate::config::Config;
 
@@ -18,7 +19,8 @@ pub async fn get_database_connection() -> DatabaseConnection {
         .connect_timeout(Duration::from_secs(8))
         .acquire_timeout(Duration::from_secs(8))
         .idle_timeout(Duration::from_secs(8))
-        .max_lifetime(Duration::from_secs(8));
+        .max_lifetime(Duration::from_secs(8))
+        .sqlx_logging(false);
 
     let db = Database::connect(opt)
         .await
@@ -31,4 +33,14 @@ pub async fn ping_db(db: DatabaseConnection) -> bool {
     db.ping().await.is_ok()
 }
 
-pub async fn apply_migrations(db: DatabaseConnection) {}
+pub async fn apply_migrations(db: &DatabaseConnection) {
+    migrations::Migrator::up(db, None)
+        .await
+        .expect("Migration failed")
+}
+
+pub async fn undo_migrations(db: &DatabaseConnection) {
+    migrations::Migrator::down(db, None)
+        .await
+        .expect("Migration undo failed")
+}

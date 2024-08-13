@@ -16,6 +16,12 @@ impl MigrationTrait for Migration {
             )
             .await
     }
+
+    async fn down(&self, manager: &SchemaManager) -> Result<(), DbErr> {
+        manager
+            .drop_table(Table::drop().table(User::Table).to_owned())
+            .await
+    }
 }
 
 #[derive(DeriveIden)]

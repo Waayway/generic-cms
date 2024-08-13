@@ -32,6 +32,9 @@ tracing-subscriber = "0.3.18"
 envy = "0.4.2"
 dotenv = "0.15.0"
 
+# Cli
+clap = {version = "4.5.15", features = ["derive"]}
+
 # Databas dependencies
 [dependencies.sea-orm]
 version = "1.0.0"
