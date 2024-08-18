@@ -5,6 +5,7 @@ use sea_orm_migration::MigratorTrait;
 
 use crate::config::Config;
 
+mod entities;
 mod migrations;
 
 pub async fn get_database_connection() -> DatabaseConnection {
@@ -36,11 +37,11 @@ pub async fn ping_db(db: DatabaseConnection) -> bool {
 pub async fn apply_migrations(db: &DatabaseConnection) {
     migrations::Migrator::up(db, None)
         .await
-        .expect("Migration failed")
+        .expect("Something went wrong running migrations")
 }
 
 pub async fn undo_migrations(db: &DatabaseConnection) {
     migrations::Migrator::down(db, None)
         .await
-        .expect("Migration undo failed")
+        .expect("Something went wrong running migrations")
 }
