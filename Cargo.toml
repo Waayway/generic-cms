@@ -34,19 +34,16 @@ dotenv = "0.15.0"
 
 # Cli
 clap = {version = "4.5.15", features = ["derive"]}
+chrono = "0.4.38"
 
-# Databas dependencies
-[dependencies.sea-orm]
-version = "1.0.0"
+[dependencies.sqlx]
+version = "0.8"
 features = [
-  "sqlx-postgres",
-  "runtime-tokio-rustls" ,
-  "macros" 
-] 
-
-[dependencies.sea-orm-migration]
-version = "1.0.0"
-features = [
-  "sqlx-postgres",
-  "runtime-tokio-rustls"
+  "runtime-tokio",
+  "tls-rustls",
+  "sqlite",
+  "derive",
+  "macros",
+  "migrate"
 ]
+

@@ -23,4 +23,5 @@ pub enum Commands {
 pub enum MigrateCommands {
     Up,
     Down,
+    New,
 }

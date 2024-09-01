@@ -1,6 +1,6 @@
 use clap::Parser;
 use cli::Commands;
-use sea_orm::DatabaseConnection;
+use sqlx::SqlitePool;
 use tracing_subscriber;
 use web::init_webserver;
 
@@ -9,9 +9,9 @@ use web::init_webserver;
 //
 pub mod web;
 
-pub mod database;
-
 pub mod utils;
+
+pub mod database;
 
 pub mod config;
 
@@ -25,32 +25,37 @@ async fn main() {
         .with_test_writer()
         .init();
 
-    //  NOTE: Connect to db and create app state
-    let db = database::get_database_connection().await;
-
-    if !(database::ping_db(db.clone()).await) {
-        panic!("No connection to the database could be found");
-    }
-
     let args = cli::Args::parse();
+
+    //  NOTE: Database constructor
+    let pool = database::get_database_driver()
+        .await
+        .expect("Error loading database");
 
     match args.command {
         Commands::Serve => {
-            start_webserver(db).await;
+            start_webserver(pool).await;
         }
         Commands::Migrate { command } => match command {
             cli::MigrateCommands::Up => {
-                database::apply_migrations(&db).await;
+                database::migration_up(&pool)
+                    .await
+                    .expect("Something went wrong running migrations");
             }
             cli::MigrateCommands::Down => {
-                database::undo_migrations(&db).await;
+                database::migration_down(&pool)
+                    .await
+                    .expect("Something went wrong running migrations");
+            }
+            cli::MigrateCommands::New => {
+                database::new_migration();
             }
         },
     }
 }
 
-async fn start_webserver(db: DatabaseConnection) {
-    let state = AppState { db };
+async fn start_webserver(pool: SqlitePool) {
+    let state = AppState { pool };
 
     // NOTE: start webserver
     init_webserver(state).await;
@@ -58,5 +63,5 @@ async fn start_webserver(db: DatabaseConnection) {
 
 #[derive(Clone)]
 pub struct AppState {
-    db: DatabaseConnection,
+    pool: SqlitePool,
 }
